@@ -21,22 +21,22 @@ public class ProjectService(PortfolioDbContext db) : IProjectService
         return project is null ? null : ToDto(project);
     }
 
-    public async Task<ProjectReadDto> CreateAsync(ProjectCreateDto dto)
+   public async Task<ProjectReadDto> CreateAsync(ProjectCreateDto dto)
+{
+    var project = new Project
     {
-        var project = new Project
-        {
-            Titel = dto.Titel,
-            Beschrijving = dto.Beschrijving,
-            Categorie = dto.Categorie,
-            GitHubUrl = dto.GitHubUrl,
-            Datum = dto.Datum
-        };
+        Titel = dto.Titel,
+        Beschrijving = dto.Beschrijving,
+        Categorie = dto.Categorie,
+        GitHubUrl = dto.GitHubUrl,
+        Datum = dto.Datum
+    };
 
-        db.Projects.Add(project);
-        await db.SaveChangesAsync();
+    db.Projects.Add(project);
+    await db.SaveChangesAsync();
 
-        return ToDto(project);
-    }
+    return ToDto(project);
+}
 
     public async Task<bool> UpdateAsync(int id, ProjectUpdateDto dto)
     {
