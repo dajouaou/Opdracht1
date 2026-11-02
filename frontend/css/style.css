@@ -308,3 +308,93 @@ a {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* opmaak voor de projectfilters */
+.project-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 500px;
+    margin-bottom: 30px;
+}
+
+.project-controls input,
+.project-controls select,
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d8c8e8;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.project-controls input:focus,
+.project-controls select:focus,
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: 2px solid #6d3bb5;
+    outline-offset: 2px;
+}
+
+/* ruimte tussen de velden van het contactformulier */
+.contact-section {
+    padding: 70px 0;
+}
+
+.contact-section form {
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 22px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.error-message {
+    color: #a32121;
+    font-size: 0.9rem;
+    margin-top: 6px;
+}
+
+input[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+    border-color: #a32121;
+}
+
+#form-status,
+#project-status {
+    margin-top: 15px;
+    color: #51405f;
+}
+
+/* opmaak voor het weerbericht */
+.api-section {
+    padding: 60px 0;
+    background: #eee4fb;
+}
+
+.api-section h2 {
+    margin-bottom: 15px;
+    color: #39234c;
+}
+
+#weather-result {
+    margin-top: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+@media (max-width: 768px) {
+    .project-controls {
+        max-width: 100%;
+    }
+}

@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | Doa Ajouaou</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/formulier.js" defer></script>
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">Ga naar inhoud</a>
+
+<header class="site-header">
+    <div class="container nav-container">
+        <a class="logo" href="index.html">Doa Ajouaou</a>
+
+        <nav aria-label="Hoofdnavigatie">
+            <ul class="nav-list">
+                <li><a href="index.html">Whoami</a></li>
+                <li><a href="projecten.html">Projecten</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="contact.html" aria-current="page">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main id="main-content">
+    <section class="page-header">
+        <div class="container">
+            <p class="eyebrow">Neem contact op</p>
+            <h1>Contact</h1>
+            <p>Heb je een vraag? Vul dan het contactformulier in.</p>
+        </div>
+    </section>
+
+    <section class="contact-section">
+        <div class="container">
+            <form id="contact-form" novalidate>
+
+                <div class="form-group">
+                    <label for="name">Naam</label>
+                    <input type="text" id="name" name="name"
+                           aria-describedby="name-error" required>
+                    <p class="error-message" id="name-error"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">E-mailadres</label>
+                    <input type="email" id="email" name="email"
+                           aria-describedby="email-error" required>
+                    <p class="error-message" id="email-error"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Bericht</label>
+                    <textarea id="message" name="message" rows="5"
+                              aria-describedby="message-error" required></textarea>
+                    <p class="error-message" id="message-error"></p>
+                </div>
+
+                <button class="button" type="submit">Verstuur bericht</button>
+
+                <p id="form-status" role="status" aria-live="polite"></p>
+            </form>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>&copy; 2026 Doa Ajouaou</p>
+    </div>
+</footer>
+
+</body>
+</html>

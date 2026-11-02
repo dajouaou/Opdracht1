@@ -1,0 +1,47 @@
+### Technische toelichting
+
+Voor Opdracht 2 heb ik JavaScript toegevoegd 
+aan mijn portfolio-site. 
+De JavaScript-code staat in losse bestanden 
+in de map `js`. 
+Ik heb de code verdeeld over drie bestanden: 
+`projecten.js`, `formulier.js` en `api.js`.
+
+In `projecten.js` staan de projecten in een 
+array. Met `forEach()` 
+loop ik door de projecten heen. 
+Met `createElement()` maak ik HTML-elementen 
+aan en met `textContent` voeg ik de tekst toe. 
+Met `appendChild()` plaats ik de projecten op 
+de pagina.
+
+De filter en zoekfunctie gebruiken event 
+listeners. De filter reageert op het 
+`change`-event en de zoekfunctie op het 
+`input`-event. Wanneer de gebruiker iets 
+aanpast, wordt de projectenlijst opnieuw 
+opgebouwd.
+
+In `formulier.js` controleer ik de naam, 
+het e-mailadres en het bericht. 
+De naam mag niet leeg zijn, 
+het e-mailadres moet een geldig formaat 
+hebben en het bericht moet minimaal 
+tien tekens bevatten. Bij ongeldige 
+invoer verschijnt een foutmelding 
+bij het juiste veld. Bij geldige 
+invoer verschijnt een bevestiging.
+
+In `api.js` gebruik ik de `fetch()`-methode 
+om actuele weergegevens op te 
+halen via de publieke API van Open-Meteo. 
+De ontvangen JSON-data wordt met JavaScript 
+verwerkt en op de pagina getoond. Tijdens 
+het ophalen verschijnt een laadmelding. 
+Als er iets misgaat, verschijnt een foutmelding.
+
+De bestaande HTML en CSS uit Opdracht 1 
+zijn als basis gebruikt. Ik heb de nieuwe 
+onderdelen zo gemaakt dat ze aansluiten bij 
+de bestaande vormgeving. De website blijft 
+responsive en bruikbaar met toetsenbordnavigatie.
