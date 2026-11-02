@@ -30,7 +30,6 @@ public class BlogPostService(PortfolioDbContext db) : IBlogPostService
             Publicatiedatum = dto.Publicatiedatum
         };
 
-        post.Publicatiedatum = DateTime.Now;
         db.BlogPosts.Add(post);
         await db.SaveChangesAsync();
 
