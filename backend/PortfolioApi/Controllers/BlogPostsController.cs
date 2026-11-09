@@ -14,7 +14,7 @@ public class BlogPostsController(IBlogPostService service) : ControllerBase // d
 
 // api/blogposts/id (id moet gevuld worden --> komt uit URL van HTTP-request)
     [HttpGet("{id:int}")]  // vertelt asp.net dat id int moet zijn  (modelbinding--> id wordt automatisch gevuld)
-    public async Task<ActionResult<BlogPostReadDto>> GetById(int id) // modelbinding (asp.net framework zet waarde in id en dto zelf) --> bepaalt via waar parameter vandaan komt en waar waarde wordt gezocht
+    public async Task<ActionResult<BlogPostReadDto>> GetById(int id) // modelbinding (asp.net framework zet waarde in id en dto zelf (dto bij create & delete)) --> bepaalt via waar parameter vandaan komt en waar waarde wordt gezocht
     {
         var post = await service.GetByIdAsync(id); 
         return post is null ? NotFound() : Ok(post); // ternary operator ?: is if/else. voorwaarde ? waardeTrue : waardeFalse;
