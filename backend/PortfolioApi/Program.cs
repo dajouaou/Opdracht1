@@ -126,5 +126,5 @@ app.MapControllers();
 
 app.Run();
 
-// Nodig voor het xUnit-testproject
+// Nodig voor het xUnit testproject
 public partial class Program { }

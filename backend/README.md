@@ -2,9 +2,9 @@
 
 ## Over mijn project
 
-Voor opdracht 3 heb ik een backend gemaakt voor mijn portfoliosite. Met deze backend kunnen projecten en blogposts worden aangemaakt, opgevraagd, aangepast en verwijderd.
+Voor opdracht 4 heb ik mijn portfolio-backend uitgebreid met beveiliging en tests. Met deze backend kunnen projecten en blogposts worden aangemaakt, opgevraagd, aangepast en verwijderd. Lezen mag iedereen; schrijven alleen een ingelogde gebruiker met de rol Editor of Admin.
 
-Ik heb hiervoor ASP.NET Core Web API, Entity Framework Core en SQL Server gebruikt.
+Ik heb hiervoor ASP.NET Core Web API, Entity Framework Core, SQL Server en ASP.NET Core Identity gebruikt. De tests staan in een apart xUnit-project in dezelfde solution.
 
 ## Gebruikte technieken
 
@@ -13,6 +13,8 @@ Ik heb hiervoor ASP.NET Core Web API, Entity Framework Core en SQL Server gebrui
 - C#
 - Entity Framework Core
 - SQL Server
+- ASP.NET Core Identity
+- xUnit
 - Swagger UI
 
 ## Projectstructuur
@@ -25,97 +27,72 @@ De backend is opgebouwd met een meerlagenarchitectuur. Hierdoor heeft elk onderd
 | DTOs | Bevat de DTO's voor het ontvangen en terugsturen van gegevens |
 | Models | Bevat de entiteiten die in de database worden opgeslagen |
 | Data | Bevat de DbContext voor de communicatie met de database |
+| Identity | Bevat de rolseeder die de rollen Gast, Editor en Admin aanmaakt |
 | Migrations | Bevat de migraties voor de databasestructuur |
+| Tests | Bevat het xUnit-testproject met de HTTP-tests |
 
 ## Functionaliteiten
 
-De API ondersteunt volledige CRUD-functionaliteit voor projecten en blogposts.
+De API ondersteunt volledige CRUD-functionaliteit voor projecten en blogposts, plus registratie en login met Identity.
 
 ### Projecten
 
-| Methode | Endpoint | Beschrijving |
-| GET | `/api/projects` | Alle projecten ophalen |
-| GET | `/api/projects/{id}` | Eén project ophalen |
-| POST | `/api/projects` | Een nieuw project aanmaken |
-| PUT | `/api/projects/{id}` | Een project wijzigen |
-| DELETE | `/api/projects/{id}` | Een project verwijderen |
+| Methode | Endpoint | Beschrijving | Toegang |
+| GET | `/api/projects` | Alle projecten ophalen | Publiek |
+| GET | `/api/projects/{id}` | Eén project ophalen | Publiek |
+| POST | `/api/projects` | Een nieuw project aanmaken | Editor of Admin |
+| PUT | `/api/projects/{id}` | Een project wijzigen | Editor of Admin |
+| DELETE | `/api/projects/{id}` | Een project verwijderen | Editor of Admin |
 
 ### Blogposts
 
+| Methode | Endpoint | Beschrijving | Toegang |
+| GET | `/api/blogposts` | Alle blogposts ophalen | Publiek |
+| GET | `/api/blogposts/{id}` | Eén blogpost ophalen | Publiek |
+| POST | `/api/blogposts` | Een nieuwe blogpost aanmaken | Editor of Admin |
+| PUT | `/api/blogposts/{id}` | Een blogpost wijzigen | Editor of Admin |
+| DELETE | `/api/blogposts/{id}` | Een blogpost verwijderen | Editor of Admin |
+
+### Statuscodes bij beveiligde routes
+
+| Situatie | Resultaat |
+| Zonder aanmelding een POST, PUT of DELETE | 401 Unauthorized |
+| Ingelogd als Gast een POST, PUT of DELETE | 403 Forbidden |
+| Ingelogd als Editor of Admin | 201 bij aanmaken, 204 bij wijzigen en verwijderen |
+| Onbekend id bij GET, PUT of DELETE | 404 Not Found |
+
+## Beveiliging met ASP.NET Core Identity
+
+Voor opdracht 4 heb ik ASP.NET Core Identity met EF Core toegevoegd. Gebruikers worden opgeslagen in dezelfde SQL Server-database als mijn projecten en blogposts. Mijn `PortfolioDbContext` erft daarom van `IdentityDbContext<IdentityUser>`, zodat de Identity-tabellen automatisch worden meegenomen in de migraties.
+
+### Rollen
+
+De API kent drie rollen:
+
+| Rol | Rechten |
+| Gast | Standaardrol bij registratie. Mag alleen lezen (GET). |
+| Editor | Mag projecten en blogposts aanmaken, wijzigen en verwijderen. |
+| Admin | Heeft dezelfde schrijfrechten als Editor, omdat Admin expliciet in de autorisatieregel staat. |
+
+Bij het opstarten worden de rollen automatisch aangemaakt via `RolSeeder.SeedRolesAsync`, dat gebruikmaakt van de `RoleManager`. Dit gebeurt alleen als een rol nog niet bestaat, dus het is veilig om meerdere keren te starten.
+
+### Registratie en login
+
 | Methode | Endpoint | Beschrijving |
-| GET | `/api/blogposts` | Alle blogposts ophalen |
-| GET | `/api/blogposts/{id}` | Eén blogpost ophalen |
-| POST | `/api/blogposts` | Een nieuwe blogpost aanmaken |
-| PUT | `/api/blogposts/{id}` | Een blogpost wijzigen |
-| DELETE | `/api/blogposts/{id}` | Een blogpost verwijderen |
+| POST | `/api/auth/register` | Nieuwe gebruiker aanmaken. Krijgt automatisch de rol Gast. |
+| POST | `/api/auth/login` | Inloggen. Geeft een authenticatiecookie terug. |
+| POST | `/api/auth/logout` | Uitloggen (alleen voor ingelogde gebruikers). |
+| GET | `/api/auth/me` | Toont het e-mailadres en de rollen van de ingelogde gebruiker. |
 
-## Database instellen
+De registratie- en loginroutes heb ik zelf gebouwd met de `UserManager` en de `SignInManager`. Publieke registratie kent nooit de rol Editor of Admin toe; de rol Gast wordt server-side toegevoegd en is niet vanuit de request te beïnvloeden.
 
-De backend gebruikt SQL Server om projecten en blogposts op te slaan.
+### De policy EditorOrAdmin
 
-De connectionstring staat in `appsettings.json`. Pas deze aan als je een andere SQL Server gebruikt.
+Alle schrijfroutes zijn beveiligd met één policy. Die staat in `Program.cs`:
 
-```json
+```csharp
+builder.Services.AddAuthorization(options =>
 {
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=PortfolioDb;Trusted_Connection=True;TrustServerCertificate=True;"
-  }
-}
-```
-
-De database wordt aangemaakt met Entity Framework Core migrations.
-
-Voer in de terminal de volgende opdracht uit vanuit de projectmap:
-
-```bash
-dotnet ef database update
-```
-
-Als het `dotnet ef`-commando niet beschikbaar is, installeer dan eerst de Entity Framework Core CLI-tool.
-
-## Applicatie starten
-
-1. Open de projectmap in Visual Studio Code.
-2. Open een terminal in de map waarin het `.csproj`-bestand staat.
-3. Controleer of .NET 10 is geïnstalleerd.
-4. Voer de volgende opdracht uit:
-
-```bash
-dotnet restore
-```
-
-5. Maak de database aan of werk deze bij:
-
-```bash
-dotnet ef database update
-```
-
-6. Start de applicatie:
-
-```bash
-dotnet run
-```
-
-De applicatie is nu gestart.
-
-## Swagger UI
-
-Met Swagger UI kan ik de endpoints testen zonder een aparte frontend te gebruiken.
-
-Open na het starten van de applicatie de Swagger-link die in de terminal wordt getoond.
-
-Via Swagger kan ik projecten en blogposts aanmaken, opvragen, wijzigen en verwijderen.
-
-## Repository
-
-De code van dit project staat in mijn repository:
-
-[link naar repo](https://github.com/dajouaou/Opdracht1)
-
-## Auteur
-
-Gemaakt door: [Doa Ajouaou] 
-
-Opleiding: HBO-ICT
-
-Opdracht: Opdracht 3 – Backend met ASP.NET Core Web API en EF Core
+    options.AddPolicy("EditorOrAdmin", policy =>
+        policy.RequireRole("Editor", "Admin"));
+});
