@@ -55,6 +55,7 @@ C:\Users\doaaj\Semester5\Opdracht1\backend\PortfolioApi\bin\Debug\net10.0\Portfo
 C:\Users\doaaj\Semester5\Opdracht1\backend\PortfolioApi\bin\Debug\net10.0\Azure.Core.dll
 C:\Users\doaaj\Semester5\Opdracht1\backend\PortfolioApi\bin\Debug\net10.0\Azure.Identity.dll
 C:\Users\doaaj\Semester5\Opdracht1\backend\PortfolioApi\bin\Debug\net10.0\Humanizer.dll
+C:\Users\doaaj\Semester5\Opdracht1\backend\PortfolioApi\bin\Debug\net10.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\doaaj\Semester5\Opdracht1\backend\PortfolioApi\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll
 C:\Users\doaaj\Semester5\Opdracht1\backend\PortfolioApi\bin\Debug\net10.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\doaaj\Semester5\Opdracht1\backend\PortfolioApi\bin\Debug\net10.0\Microsoft.Bcl.Cryptography.dll

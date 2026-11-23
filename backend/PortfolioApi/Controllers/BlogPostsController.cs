@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PortfolioApi.DTOs;
 using PortfolioApi.Services;
@@ -9,11 +10,13 @@ namespace PortfolioApi.Controllers;
 public class BlogPostsController(IBlogPostService service) : ControllerBase // dependency injection (Iblogpostservice hoort bij controller dus dat inject je hier)
 {
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<List<BlogPostReadDto>>> GetAll() =>    // waarde niet direct terug --> belofte waarde later komt
         Ok(await service.GetAllAsync()); // await want waarde niet direct terug --> eerst CRUD uitvoeren en dan waarde teruggeven (statuscode of dto als json)
 
 // api/blogposts/id (id moet gevuld worden --> komt uit URL van HTTP-request)
     [HttpGet("{id:int}")]  // vertelt asp.net dat id int moet zijn  (modelbinding--> id wordt automatisch gevuld)
+    [AllowAnonymous]
     public async Task<ActionResult<BlogPostReadDto>> GetById(int id) // modelbinding (asp.net framework zet waarde in id en dto zelf (dto bij create & delete)) --> bepaalt via waar parameter vandaan komt en waar waarde wordt gezocht
     {
         var post = await service.GetByIdAsync(id); 
@@ -30,6 +33,7 @@ public class BlogPostsController(IBlogPostService service) : ControllerBase // d
 // HTTP-request --> modelbinding vult id uit URL --> service haalt bericht op --> ternary if/else --> asp.net zet om naar HTTP-statuscode met JSON-body --> client krijgt json
 
     [HttpPost]
+    [Authorize(Policy = "EditorOrAdmin")]
     public async Task<ActionResult<BlogPostReadDto>> Create(BlogPostCreateDto dto)
     {
         var created = await service.CreateAsync(dto);
@@ -37,10 +41,12 @@ public class BlogPostsController(IBlogPostService service) : ControllerBase // d
     }
 
     [HttpPut("{id:int}")]
+    [Authorize(Policy = "EditorOrAdmin")]
     public async Task<IActionResult> Update(int id, BlogPostUpdateDto dto) =>
         await service.UpdateAsync(id, dto) ? NoContent() : NotFound();
 
     [HttpDelete("{id:int}")]
+    [Authorize(Policy = "EditorOrAdmin")]
     public async Task<IActionResult> Delete(int id) =>
         await service.DeleteAsync(id) ? NoContent() : NotFound(); // voorwaarde ? IfTrue (nocontent) : IfFalse (notfound)
 }
