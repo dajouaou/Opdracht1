@@ -188,6 +188,21 @@ public class BlogPostsTests : IDisposable
         var lijst = await editor.GetFromJsonAsync<List<BlogPostReadDto>>("/api/blogposts");
         Assert.Empty(lijst!);
     }
+    [Fact]
+    public async Task PostBlogPost_TeLangeInhoud_Geeft400EnSlaatNietsOp()
+    {
+    // Arrange: de inhoud mag maximaal 10000 tekens zijn, dit zijn er 10001
+    var editor = await TestHelpers.MaakIngelogdeClientAsync(_factory, "Editor");
+    var teLang = GeldigeBlogPost();
+    teLang.Inhoud = new string('a', 10001);
+
+    // Act
+    var response = await editor.PostAsJsonAsync("/api/blogposts", teLang);
+
+    // Assert: foutmelding, en de lijst is nog leeg
+    Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    var lijst = await editor.GetFromJsonAsync<List<BlogPostReadDto>>("/api/blogposts");
+    Assert.Empty(lijst!);}
 
     // put
 

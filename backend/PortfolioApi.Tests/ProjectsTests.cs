@@ -27,6 +27,57 @@ public class ProjectsTests : IDisposable
         };
     }
 
+    [Fact]
+public async Task PostProject_TeLangeBeschrijving_Geeft400EnSlaatNietsOp()
+{
+    // Arrange: de beschrijving mag maximaal 2000 tekens zijn, dit zijn er 2001
+    var editor = await TestHelpers.MaakIngelogdeClientAsync(_factory, "Editor");
+    var teLang = GeldigProject();
+    teLang.Beschrijving = new string('a', 2001);
+
+    // Act
+    var response = await editor.PostAsJsonAsync("/api/projects", teLang);
+
+    // Assert: foutmelding, en de lijst is nog leeg
+    Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    var lijst = await editor.GetFromJsonAsync<List<ProjectReadDto>>("/api/projects");
+    Assert.Empty(lijst!);
+}
+
+[Fact]
+public async Task PostProject_TeLangeCategorie_Geeft400EnSlaatNietsOp()
+{
+    // Arrange: de categorie mag maximaal 80 tekens zijn, dit zijn er 81
+    var editor = await TestHelpers.MaakIngelogdeClientAsync(_factory, "Editor");
+    var teLang = GeldigProject();
+    teLang.Categorie = new string('a', 81);
+
+    // Act
+    var response = await editor.PostAsJsonAsync("/api/projects", teLang);
+
+    // Assert: foutmelding, en de lijst is nog leeg
+    Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    var lijst = await editor.GetFromJsonAsync<List<ProjectReadDto>>("/api/projects");
+    Assert.Empty(lijst!);
+}
+
+[Fact]
+public async Task PostProject_TeLangeGitHubUrl_Geeft400EnSlaatNietsOp()
+{
+    // Arrange: de GitHub-url mag maximaal 500 tekens zijn, dit zijn er meer dan 500
+    var editor = await TestHelpers.MaakIngelogdeClientAsync(_factory, "Editor");
+    var teLang = GeldigProject();
+    teLang.GitHubUrl = "https://github.com/" + new string('a', 500);
+
+    // Act
+    var response = await editor.PostAsJsonAsync("/api/projects", teLang);
+
+    // Assert: foutmelding, en de lijst is nog leeg
+    Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    var lijst = await editor.GetFromJsonAsync<List<ProjectReadDto>>("/api/projects");
+    Assert.Empty(lijst!);
+}
+
     // dezelfde gegevens voor een wijziging (PUT gebruikt een ander DTO)
     private static ProjectUpdateDto GeldigeWijziging(string titel)
     {
